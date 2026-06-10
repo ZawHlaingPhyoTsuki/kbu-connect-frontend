@@ -39,10 +39,12 @@ export function LoginForm() {
     defaultValues: { code: "" },
     validators: { onSubmit: otpSchema },
     onSubmit: async ({ value }) => {
-      await verifyCode.mutateAsync({ email: pendingEmail!, code: value.code });
+      if (!pendingEmail) return;
+      await verifyCode.mutateAsync({ email: pendingEmail, code: value.code });
     },
   });
 
+  //-- First Step - Enter Email
   if (!pendingEmail) {
     return (
       <Card className="max-w-md w-full">
@@ -60,9 +62,8 @@ export function LoginForm() {
             }}
           >
             <FieldGroup>
-              <emailForm.Field
-                name="email"
-                children={(field) => {
+              <emailForm.Field name="email">
+                {(field) => {
                   const isInvalid =
                     field.state.meta.isTouched && !field.state.meta.isValid;
                   return (
@@ -71,7 +72,6 @@ export function LoginForm() {
                       <Input
                         id={field.name}
                         name={field.name}
-                        type="email"
                         placeholder="you@university.ac.th"
                         autoComplete="email"
                         value={field.state.value}
@@ -85,7 +85,7 @@ export function LoginForm() {
                     </Field>
                   );
                 }}
-              />
+              </emailForm.Field>
 
               <Field>
                 <Button
@@ -95,15 +95,6 @@ export function LoginForm() {
                 >
                   {requestCode.isPending ? "Sending…" : "Send code"}
                 </Button>
-
-                {requestCode.isError && (
-                  <FieldError
-                    errors={[
-                      (requestCode.error as any)?.response?.data?.message ??
-                        "Something went wrong",
-                    ]}
-                  />
-                )}
 
                 <FieldDescription className="text-center">
                   Don&apos;t have an account?{" "}
@@ -119,6 +110,7 @@ export function LoginForm() {
     );
   }
 
+  //-- Second Step - Verify Code
   return (
     <Card className="max-w-md w-full">
       <CardHeader>
@@ -136,9 +128,8 @@ export function LoginForm() {
           }}
         >
           <FieldGroup>
-            <otpForm.Field
-              name="code"
-              children={(field) => {
+            <otpForm.Field name="code">
+              {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
@@ -165,7 +156,7 @@ export function LoginForm() {
                   </Field>
                 );
               }}
-            />
+            </otpForm.Field>
 
             <Field>
               <Button
@@ -175,15 +166,6 @@ export function LoginForm() {
               >
                 {verifyCode.isPending ? "Verifying…" : "Verify code"}
               </Button>
-
-              {verifyCode.isError && (
-                <FieldError
-                  errors={[
-                    (verifyCode.error as any)?.response?.data?.message ??
-                      "Invalid or expired code",
-                  ]}
-                />
-              )}
 
               <FieldDescription className="text-center">
                 Wrong email?{" "}

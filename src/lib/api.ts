@@ -42,14 +42,15 @@ api.interceptors.response.use(
       isRefreshing = true;
       try {
         const { data } = await api.post("/auth/refresh");
-        useAuthStore
-          .getState()
-          .setTokens(data.access_token, useAuthStore.getState().user!);
-        queue.forEach((cb) => cb(data.access_token));
+        useAuthStore.getState().setTokens(data.data.access_token);
+        queue.forEach((cb) => {
+          cb(data.data.access_token);
+        });
         queue = [];
-        original.headers.Authorization = `Bearer ${data.access_token}`;
+        original.headers.Authorization = `Bearer ${data.data.access_token}`;
         return api(original);
-      } catch {
+      } catch (refreshError) {
+        console.error("Token refresh failed:", refreshError);
         useAuthStore.getState().logout();
         window.location.href = "/login";
       } finally {
@@ -57,5 +58,5 @@ api.interceptors.response.use(
       }
     }
     return Promise.reject(error);
-  }
+  },
 );

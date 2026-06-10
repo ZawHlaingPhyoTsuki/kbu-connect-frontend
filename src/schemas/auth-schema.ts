@@ -2,9 +2,9 @@ import { z } from "zod";
 
 export const emailSchema = z.object({
   email: z
-    .email("Invalid email")
+    .string()
     .min(1, "Email is required")
-    .refine((e) => e.toLowerCase().endsWith("@ms.kbu.ac.th"), {
+    .refine((e) => e.endsWith("@ms.kbu.ac.th"), {
       message: "Must be a KBU student email (@ms.kbu.ac.th)",
     }),
 });

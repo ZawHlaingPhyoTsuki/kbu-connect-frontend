@@ -20,7 +20,7 @@ export function useVerifyCode() {
     mutationFn: ({ email, code }: { email: string; code: string }) =>
       verifyCode(email, code),
     onSuccess: (data) => {
-      setTokens(data.access_token, { profileCompleted: data.profileCompleted });
+      setTokens(data.access_token, data.profileCompleted);
       clearPendingEmail();
       router.push(data.profileCompleted ? "/discover" : "/matches");
     },

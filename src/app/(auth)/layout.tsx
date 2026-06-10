@@ -9,15 +9,15 @@ export default function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const user = useAuthStore((s) => s.user);
+  const accessToken = useAuthStore((s) => s.accessToken);
   const router = useRouter();
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   useEffect(() => {
-    if (user) router.replace("/discover");
-  }, [user]);
+    if (accessToken) router.replace("/discover");
+  }, [accessToken]);
 
-  if (user) return null;
+  if (accessToken) return null;
 
   return <>{children}</>;
 }

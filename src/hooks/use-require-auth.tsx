@@ -5,14 +5,17 @@ import { useEffect } from "react";
 import { useAuthStore } from "@/stores/auth-store";
 
 export function useRequireAuth() {
-  const user = useAuthStore((s) => s.user);
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const profileCompleted = useAuthStore((s) => s.profileCompleted);
   const router = useRouter();
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (!user) router.replace("/login");
-    else if (user && !user.profileCompleted) router.replace("/discover");
-  }, [user]);
+    if (!accessToken) {
+      router.replace("/login");
+    } else if (accessToken && profileCompleted === false) {
+      router.replace("/discover");
+    }
+  }, [accessToken, profileCompleted, router]);
 
-  return user;
+  return { accessToken, profileCompleted };
 }
