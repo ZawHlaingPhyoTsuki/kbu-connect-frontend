@@ -1,0 +1,23 @@
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/stores/auth-store";
+
+export default function AuthLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const user = useAuthStore((s) => s.user);
+  const router = useRouter();
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <>
+  useEffect(() => {
+    if (user) router.replace("/discover");
+  }, [user]);
+
+  if (user) return null;
+
+  return <>{children}</>;
+}

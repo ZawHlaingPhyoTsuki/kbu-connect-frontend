@@ -4,8 +4,8 @@ export const emailSchema = z.object({
   email: z
     .email("Invalid email")
     .min(1, "Email is required")
-    .refine((e) => e.endsWith(".ac.th") || e.endsWith(".edu"), {
-      message: "Must be a university email",
+    .refine((e) => e.toLowerCase().endsWith("@ms.kbu.ac.th"), {
+      message: "Must be a KBU student email (@ms.kbu.ac.th)",
     }),
 });
 

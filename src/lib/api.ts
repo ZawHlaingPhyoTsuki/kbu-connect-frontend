@@ -19,6 +19,14 @@ api.interceptors.response.use(
   (res) => res,
   async (error) => {
     const original = error.config;
+
+    // skip retry if the failed request was /auth/refresh itself
+    if (original.url?.includes("/auth/refresh")) {
+      useAuthStore.getState().logout();
+      window.location.href = "/login";
+      return Promise.reject(error);
+    }
+
     if (error.response?.status === 401 && !original._retry) {
       original._retry = true;
 
@@ -49,5 +57,5 @@ api.interceptors.response.use(
       }
     }
     return Promise.reject(error);
-  },
+  }
 );

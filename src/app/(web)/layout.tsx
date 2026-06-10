@@ -21,7 +21,10 @@ export default function WebLayout({ children }: { children: React.ReactNode }) {
       .then(({ access_token }) => {
         setTokens(access_token, { profileCompleted: true });
       })
-      .catch(() => router.replace("/login"))
+      .catch(() => {
+        console.log("hit")
+        router.replace("/login");
+      })
       .finally(() => setHydrating(false));
   }, []);
 
